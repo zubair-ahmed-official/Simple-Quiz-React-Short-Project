@@ -4,6 +4,7 @@ const Quiz = () => {
   const [questions, setQuestions] = useState([]);
   const [userAnswers, setUserAnswers] = useState([]);
   const [showScore, setShowScore] = useState(false);
+  const [showName, setName] = useState("");
   const [timer, setTimer] = useState(0);
   const [timerExpired, setTimerExpired] = useState(false);
   const targetRef = useRef(null);
@@ -57,13 +58,14 @@ const Quiz = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const name = event.target.name.value;
+    setName(name)
     setShowScore(true);
     clearInterval();
     console.log('Score:', calculateScore()); // Display or process the score as needed
   };
 
   const handleTimerExpired = () => {
-
     setTimerExpired(true);
     setShowScore(true);
     console.log('Time is up!');
@@ -92,11 +94,17 @@ const Quiz = () => {
             </div>
           )}
           {calculateScore() < 2 &&
-            <h4>Your score: <span style={{ color: 'red' }}> {calculateScore()} </span> out of {questions.length}</h4>
-            || calculateScore() === 7 &&
-            <>
+            <div>
+              <h4>Candidate name: {showName} </h4><h4>Your score: <span style={{ color: 'red' }}> {calculateScore()} </span> out of {questions.length}</h4></div>
+           || calculateScore() < 7 &&
+           <div>
+             <h4>Candidate name: {showName} </h4>
+             <h4>Your score: {calculateScore()} out of {questions.length}</h4></div> 
+             || calculateScore() === 7 &&
+            <div>
               <h3 style={{ color: 'cyan' }}>Congratulations!</h3>
-              <h4>Your score: {calculateScore()} out of {questions.length}</h4></>
+              <h4>Candidate name: {showName} </h4>
+              <h4>Your score: {calculateScore()} out of {questions.length}</h4></div>
           }
           <button onClick={handleRestart}> Restart the Quiz</button>
           <br></br><br></br>
@@ -114,7 +122,10 @@ const Quiz = () => {
       )}
 
       <form onSubmit={handleSubmit}>
-      <ol> { questions.map((question, index) => (
+     <div>
+      <label>Name: </label>
+      <input type='text' name='name' style={{padding:'5px', width:'200px'}} placeholder='Enter your name' required></input>
+     <ol> { questions.map((question, index) => (
           <div key={index}>
             <li><b>{question.question}</b></li>
             <ol type="a">
@@ -162,6 +173,7 @@ const Quiz = () => {
           showScore && <a onClick={scrollToTarget}>Click to see the Result</a>
         }
 
+     </div>
       </form>
 
     </div>
